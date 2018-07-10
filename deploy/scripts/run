@@ -1,0 +1,3 @@
+#!/bin/bash
+
+$PWD/deploy/scripts/build

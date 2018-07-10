@@ -1,0 +1,82 @@
+version: '3'
+services:
+
+#################################################################
+# Nginx 
+# 
+# Image is build from deploy/containers/nginx because 
+# Nginx creates some anti patterns
+#
+#################################################################
+  nginx:
+    build: deploy/containers/nginx
+    ports:
+      - 8080:80
+      - 8443:443
+    #container_name: nginx
+    environment:
+      - VIRTUAL_HOST=example.peachyproxy.tld
+    volumes:
+      - .:/var/www/
+
+#################################################################
+# PHP
+#
+# Lets build this from deploy/containers/fpm Just because 
+# we might need some PHP addons and things like composer 
+#
+#################################################################
+  php:
+    build: deploy/containers/fpm
+    ports:
+      - 8181:1337
+    #container_name: php
+    environment:
+      - APP_ENV=dev
+    volumes: # Mount code to /var/www/ to this container to because nginx passes the full path to fpm
+      - .:/var/www/
+
+  #################################################################
+  # Database
+  #
+  # If you dont like MySQL, feel free to use anything else :)
+  #
+  #################################################################
+  database:
+    image: mysql/mysql-server:5.5
+    env_file:
+      # Default credentials are root:root / user:user 
+      - ./deploy/conf/database.env
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_storage:/var/lib/mysql
+
+  #################################################################
+  # Optional
+  #
+  # Feel free to disable what you do not need 
+  # and add anything you like.
+  # 
+  #################################################################
+  
+  # PhpMyAdmin
+  # A (not production ready) web interface for MySQL
+  pma:
+    image: phpmyadmin/phpmyadmin
+    env_file:
+      - ./deploy/conf/database.env
+
+  # Redis
+  # Rather simple key/value store
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+  # Mailhog
+  # Just a test service for e-mail
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 25:1025
+      - 8025:8025
