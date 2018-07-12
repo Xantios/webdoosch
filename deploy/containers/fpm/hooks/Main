@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cd /var/www/
+composer install
+#cp .env.example .env
+
+php artisan key:generate
+php artisan jwt:generate
+
+php artisan migrate
+#php artisan migrate:refresh
+#php artisan db:seed
+
+/usr/sbin/php-fpm7 --nodaemonize
