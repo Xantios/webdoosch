@@ -26,7 +26,11 @@ RUN echo "php_admin_value[sendmail_path] = /usr/sbin/sendmail -S mail:1025 -t" >
 
 #EXPOSE 9000 # Enable if you need it
 
-RUN echo "Running FPM Prestart Hook " ; chmod +x /prestart.sh ; /prestart.sh
+# sleep 1 because storage needs sync stime
+# https://github.com/moby/moby/issues/9547
+RUN echo "Running FPM Prestart Hook " ; chmod +x /prestart.sh ; sleep 1; /prestart.sh
 RUN echo "Running Start Hook " ; chmod +x /main.sh
+
+WORKDIR /var/www/
 
 ENTRYPOINT /main.sh

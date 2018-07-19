@@ -1,0 +1,6 @@
+FROM php:7.2-alpine
+
+RUN docker-php-ext-install pdo pdo_mysql pcntl posix
+WORKDIR /var/www/
+
+CMD php artisan queue:listen

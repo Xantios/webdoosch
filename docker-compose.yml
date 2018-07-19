@@ -43,7 +43,8 @@ services:
   #
   #################################################################
   database:
-    image: mysql/mysql-server:5.5
+    #image: mysql/mysql-server:8.0.11
+    image: mysql/mysql-server:5.7
     env_file:
       # Default credentials are root:root / user:user 
       - ./deploy/conf/database.env
@@ -61,22 +62,31 @@ services:
   #################################################################
   
   # PhpMyAdmin
-  # A (not production ready) web interface for MySQL
-  pma:
-    image: phpmyadmin/phpmyadmin
-    env_file:
-      - ./deploy/conf/database.env
+  # A popular web interface for MySQL
+  #pma:
+  #  image: phpmyadmin/phpmyadmin
+  #  env_file:
+  #    - ./deploy/conf/database.env
 
   # Redis
   # Rather simple key/value store
-  redis:
-    image: redis:latest
-    ports:
-      - 6379:6379
+  #redis:
+  #  image: redis:latest
+  #  ports:
+  #    - 6379:6379
+
+  # Queue 
+  # To run Laravel Queue commands
+  #queue:
+  #  build: deploy/containers/queue
+  #  volumes:
+  #    - .:/var/www/
+      
   # Mailhog
   # Just a test service for e-mail
-  mail:
-    image: mailhog/mailhog
-    ports:
-      - 25:1025
-      - 8025:8025
+  # you can expose port 25, however this is for expert usage only
+  #mail:
+  #  image: mailhog/mailhog
+  #  ports:
+  ##    - 25:1025
+  #    - 8025:8025
